@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Audio Buttons with Fixed Time Pulsation</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: url('test.png') no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    .audio-button1, .audio-button2, .audio-button3 {
+      width: 30vmin;
+      height: 30vmin;
+      border-radius: 50%;
+      background-color: rgba(0, 0, 0, 0.7);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 4vmin;
+      cursor: pointer;
+      position: absolute;
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .audio-button1 {
+      left: 5%;
+      top: 5%;
+    }
+
+    .audio-button2 {
+      right: 5%;
+      top: 35%;
+    }
+
+    .audio-button3 {
+      left: 5%;
+      bottom: 5%;
+    }
+
+    .audio-button1:hover, .audio-button2:hover, .audio-button3:hover {
+      transform: scale(1.1);
+    }
+
+    .description1, .description2, .description3 {
+      font-size: 5vmin;
+      color: white;
+      position: absolute;
+      white-space: nowrap;
+      transform: translateX(-50%);
+    }
+
+    .description1 {
+      left: calc(5% + 30vmin);
+      top: calc(5% + 4vmin);
+    }
+
+    .description2 {
+      right: calc(5% + 4vmin);
+      top: calc(35% + 4vmin);
+    }
+
+    .description3 {
+      left: calc(5% + 30vmin);
+      bottom: calc(5% + 20vmin);
+    }
+
+    /* Pulsierende Animation mit festen Zeitintervallen */
+    @keyframes pulsate {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.2);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+.pulsating1 {
+      animation: pulsate 2.1052s infinite ease-in-out;
+    }
+
+    .pulsating2 {
+      animation: pulsate 2.28571s infinite ease-in-out;
+    }
+
+    .pulsating3 {
+      animation: pulsate 0.5s infinite ease-in-out;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="button-container">
+    <div class="audio-button1" data-audio="C:/Users/Secrecy/Desktop/Annika/Feingestimmt1.mp3">
+      1
+    </div>
+    <div class="description1">Soundtrack 1</div>
+
+    <div class="audio-button2" data-audio="C:/Users/Secrecy/Desktop/Annika/Feingestimmt2.mp3">
+      2
+    </div>
+    <div class="description2">Soundtrack 2</div>
+
+    <div class="audio-button3" data-audio="Soundwaves - Heart of Now.mp3">
+      3
+    </div>
+    <div class="description3">Soundtrack 3</div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const buttons = document.querySelectorAll('.audio-button1, .audio-button2, .audio-button3');
+      let currentAudio = null;
+      let playingButton = null;
+
+      buttons.forEach(button => {
+        button.addEventListener('click', () => {
+          const audioSrc = button.getAttribute('data-audio');
+          const playButton = button;
+
+          if (currentAudio && playingButton === button) {
+            currentAudio.pause();
+            currentAudio = null;
+            playButton.classList.remove('pulsating1', 'pulsating2', 'pulsating3');
+            playingButton = null;
+            return;
+          }
+
+          if (currentAudio) {
+            currentAudio.pause();
+            playingButton.classList.remove('pulsating1', 'pulsating2', 'pulsating3');
+            currentAudio = null;
+          }
+
+          currentAudio = new Audio(audioSrc);
+          currentAudio.play().catch(err => console.error("Audio error:", err));
+          playingButton = button;
+
+          if (button === document.querySelector('.audio-button1')) {
+            playButton.classList.add('pulsating1');
+          } else if (button === document.querySelector('.audio-button2')) {
+            playButton.classList.add('pulsating2');
+          } else if (button === document.querySelector('.audio-button3')) {
+            playButton.classList.add('pulsating3');
+          }
+
+          currentAudio.addEventListener('ended', () => {
+            currentAudio = null;
+            playingButton.classList.remove('pulsating1', 'pulsating2', 'pulsating3');
+            playingButton = null;
+          });
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>
